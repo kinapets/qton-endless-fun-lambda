@@ -5,6 +5,10 @@ service:
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-dotenv-plugin
+custom:
+  dotenv:
+    path: ./dotenv/.env
 
 provider:
   name: aws

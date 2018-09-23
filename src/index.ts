@@ -2,6 +2,7 @@ import { APIGatewayEvent, Callback, Context } from 'aws-lambda';
 import * as mongoose from 'mongoose';
 import { InfoHandler } from './modules/info/info.handler';
 import { MongooseService } from './services/mongoose.service';
+import { config } from './config';
 
 export interface IAppContainer {
   mongoose: {
@@ -29,7 +30,7 @@ export const hello = (event: APIGatewayEvent, context: Context, cb: Callback) =>
 
 const infoHandler = new InfoHandler(
   {
-    mongooseService: new MongooseService('test'),
+    mongooseService: new MongooseService(config.mongoConnectionString),
   },
   AppContainer,
 );
