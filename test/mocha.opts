@@ -1,0 +1,8 @@
+--recursive
+--require chai
+--require sinon
+--require ts-node/register
+--require ts-node/register
+src/**/*.test.ts
+--exit
+--timeout 15000

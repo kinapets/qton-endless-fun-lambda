@@ -4,16 +4,30 @@
   "description": "Serverless webpack example using Typescript",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --opts test/mocha.opts",
+    "deploy": "serverless deploy -v"
   },
   "devDependencies": {
     "@types/aws-lambda": "0.0.22",
+    "@types/chai": "^4.1.5",
+    "@types/lodash": "^4.14.116",
+    "@types/mocha": "^5.2.5",
     "@types/node": "^8.0.57",
+    "@types/sinon": "^5.0.2",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "serverless-offline": "^3.25.14",
     "serverless-webpack": "^4.0.0",
+    "sinon": "^6.3.4",
     "ts-loader": "^2.3.7",
+    "ts-node": "^7.0.1",
     "typescript": "^2.5.2",
     "webpack": "^3.6.0"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "mongoose": "^5.2.17"
+  }
 }
