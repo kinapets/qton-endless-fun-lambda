@@ -36,3 +36,9 @@ const infoHandler = new InfoHandler(
 );
 
 export const info = infoHandler.handle;
+
+export const snsLamdbaTriggered = (event, context, callback) => {
+  const topic = event.Records[0].Sns.TopicArn;
+  const message = event.Records[0].Sns.Message;
+  callback(null, { message: 'SNS lamdba was triggered from the topic ' + topic + ' with message ' + message, event });
+};

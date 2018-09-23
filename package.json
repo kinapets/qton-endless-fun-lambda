@@ -28,6 +28,8 @@
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT",
   "dependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "aws-sdk": "^2.320.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.2.17",
     "serverless-dotenv-plugin": "^1.2.0"
