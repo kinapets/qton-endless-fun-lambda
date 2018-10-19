@@ -1,0 +1,30 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+<input id="inp" type='file'>
+<button id="button" onclick="test()">Click</button>
+<img id="img" height="150">
+
+<script>
+    function test() {
+        const buttonData = document.getElementById('inp');
+
+        var file = buttonData.files[0]
+        var img = document.createElement("img");
+        img.classList.add("obj");
+        img.file = file;
+
+        var reader = new FileReader();
+        reader.onload = (function (aImg) {
+            return function (e) {
+                console.log("start upload")
+                aImg.src = e.target.result;
+                console.log(e.target.result.split(',')[1]);
+                const base64 = e.target.result.split(',')[1];
+                axios.post('https://jfuzi5ahih.execute-api.eu-west-1.amazonaws.com/dev/recognize', base64)
+                    .then(data => console.log(data, 'dsagdas'))
+                    .catch(err => console.log(err))
+
+            };
+        })(img);
+        reader.readAsDataURL(file);
+    }
+</script>

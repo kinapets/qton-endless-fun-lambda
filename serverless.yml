@@ -1,5 +1,5 @@
 service:
-  name: aws-nodejs-typescript
+  name: endless-fun
 
 plugins:
   - serverless-webpack
@@ -14,26 +14,11 @@ provider:
   runtime: nodejs8.10
   profile: ${env:AWS_CONFIG_PROFILE}
   region: ${env:AWS_CONFIG_REGION}
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - 'SNS:Publish'
-      Resource: 'arn:aws:sns:${env:AWS_CONFIG_REGION}:${env:AWS_CONFIG_ACCOUNT_ID}:${env:SNS_TOPIC_NAME}'
 
 functions:
-  hello:
-    handler: src/index.hello
+  recognize:
+    handler: src/index.recognize
     events:
       - http:
-          method: get
-          path: hello
-  info:
-    handler: src/index.info
-    events:
-      - http:
-          method: get
-          path: info
-  snsLamdbaTriggered:
-    handler: src/index.snsLamdbaTriggered
-    events:
-      - sns: ${env:SNS_TOPIC_NAME}
+          method: post
+          path: recognize
