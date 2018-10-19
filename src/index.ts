@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
-import { MongooseService } from './services/mongoose.service';
 import { config } from './config';
 import { RekognizeHandler } from './modules/rekognize/index.handler';
+import { MongooseService } from './services/mongoose.service';
 
 export interface IAppContainer {
   mongoose: {

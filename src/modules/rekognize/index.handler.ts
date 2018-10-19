@@ -1,9 +1,10 @@
 import { Handler, IHandlerServices } from '../../services/handler.service';
 import { APIGatewayEvent, Context } from 'aws-lambda';
 import { MongooseService } from '../../services/mongoose.service';
-import { IAppContainer } from '../..';
+
 import * as aws from 'aws-sdk';
 import Game from '../game/game.model';
+import { IAppContainer } from '../..';
 
 interface IInfoHandlerServices extends IHandlerServices {
   mongooseService: MongooseService;

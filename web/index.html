@@ -4,6 +4,7 @@
 <img id="img" height="150">
 
 <script>
+    const URL = 'https://jfuzi5ahih.execute-api.eu-west-1.amazonaws.com/dev/recognize';
     function test() {
         const buttonData = document.getElementById('inp');
 
@@ -19,7 +20,7 @@
                 aImg.src = e.target.result;
                 console.log(e.target.result.split(',')[1]);
                 const base64 = e.target.result.split(',')[1];
-                axios.post('https://jfuzi5ahih.execute-api.eu-west-1.amazonaws.com/dev/recognize', base64)
+                axios.post(URL, base64)
                     .then(data => console.log(data, 'dsagdas'))
                     .catch(err => console.log(err))
 
