@@ -1,5 +1,5 @@
 service:
-  name: endless-fun-5
+  name: endless-fun-6
 
 plugins:
   - serverless-webpack

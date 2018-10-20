@@ -45,10 +45,15 @@ export abstract class Handler<E extends TAwsLambdaEvent> implements IHandler {
 }
 
 export abstract class APIGatewayEventHandler extends Handler<APIGatewayEvent> {
-  protected response(config: { statusCode?: number; body?: {} }) {
+  protected response(config: { statusCode?: number; body?: {}; headers?: {} }) {
+    const headersObj = config.headers
+      ? { headers: config.headers }
+      : {
+          headers: { 'Access-Control-Allow-Origin': '*' },
+        };
     const bodyObj = config.body ? { body: JSON.stringify(config.body) } : {};
     const statusCode = config.statusCode ? config.statusCode : 200;
-    return { ...bodyObj, statusCode };
+    return { ...bodyObj, ...headersObj, statusCode };
   }
 
   public handle = (event: APIGatewayEvent, context: Context, cb: Callback) => {
@@ -57,15 +62,17 @@ export abstract class APIGatewayEventHandler extends Handler<APIGatewayEvent> {
         .then((response) => cb(null, response))
         .catch((err) => {
           if ((err.name = 'HandlerServiceHttpError')) {
-            return cb(null, { statusCode: err.reponse.statusCode, body: JSON.stringify(err.reponse.body) });
+            const res = this.response({ statusCode: err.reponse.statusCode, body: JSON.stringify(err.reponse.body) });
+            return cb(null, res);
           }
-          cb(null, {
+          const res = this.response({
             statusCode: 500,
             body: JSON.stringify({
               message: err.message,
               name: err.name,
             }),
           });
+          cb(null, res);
         });
     });
   };
