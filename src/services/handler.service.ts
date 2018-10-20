@@ -48,7 +48,7 @@ export abstract class Handler<E extends TAwsLambdaEvent> implements IHandler {
 
 export abstract class APIGatewayEventHandler extends Handler<APIGatewayEvent> {
   protected response(config: { statusCode?: number; body?: {} }) {
-    const bodyObj = config.body ? { body: config.body } : {};
+    const bodyObj = config.body ? { body: JSON.stringify(config.body) } : {};
     const statusCode = config.statusCode ? config.statusCode : 200;
     return { ...bodyObj, statusCode };
   }

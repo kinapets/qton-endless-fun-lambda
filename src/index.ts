@@ -1,7 +1,8 @@
 import * as mongoose from 'mongoose';
 import { config } from './config';
-import { RekognizeHandler } from './modules/rekognize/index.handler';
+import { RekognizeHandler } from './modules/story-item/index.handler';
 import { MongooseService } from './services/mongoose.service';
+import { AwsService } from './services/aws.service';
 
 export interface IAppContainer {
   mongoose: {
@@ -18,6 +19,7 @@ export const AppContainer: IAppContainer = {
 const recognizeHandler = new RekognizeHandler(
   {
     mongooseService: new MongooseService(config.mongoConnectionString),
+    awsService: new AwsService({ rekognition: { region: 'eu-west-1' }, s3: { bucket: 'endless-fun-image-storage' } }),
   },
   AppContainer,
 );

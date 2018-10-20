@@ -1,16 +1,15 @@
-import { Handler, IHandlerServices, APIGatewayEventHandler } from '../../services/handler.service';
+import { IHandlerServices, APIGatewayEventHandler } from '../../services/handler.service';
 import { APIGatewayEvent, Context } from 'aws-lambda';
 import { MongooseService } from '../../services/mongoose.service';
-import * as uuid from 'uuid';
-import StoryItemModel from '../story-item/story-item.model';
+import StoryItemModel from './story-item.model';
 
-import * as aws from 'aws-sdk';
 import { IAppContainer } from '../..';
-import { StoryItemsModel } from '../story-item/story-item.interfaces';
+import { StoryItemsModel } from './story-item.interfaces';
+import { AwsService } from '../../services/aws.service';
 
-const BUCKET_BASE_URL = 'https://s3-eu-west-1.amazonaws.com/endless-fun-image-storage/';
-interface IInfoHandlerServices extends IHandlerServices {
+interface IRekognitionHandlerServices extends IHandlerServices {
   mongooseService: MongooseService;
+  awsService: AwsService;
 }
 
 interface IRekognitionResult {
@@ -18,31 +17,10 @@ interface IRekognitionResult {
 }
 
 export class RekognizeHandler extends APIGatewayEventHandler {
-  constructor(services: IInfoHandlerServices, appContainer: IAppContainer) {
+  private awsService: AwsService;
+  constructor(services: IRekognitionHandlerServices, appContainer: IAppContainer) {
     super(services, appContainer);
-  }
-
-  private detectLabels(image: Buffer): Promise<IRekognitionResult> {
-    return new Promise((resolve, reject) => {
-      const rekognition = new aws.Rekognition({ region: 'eu-west-1' });
-      rekognition.detectLabels({ Image: { Bytes: image } }, (err, data) => {
-        return err ? reject(err) : resolve(<any>data);
-      });
-    });
-  }
-
-  private async uploadToS3(image: Buffer) {
-    const s3 = new aws.S3();
-    const id = uuid.v4();
-    await s3
-      .putObject({
-        Bucket: 'endless-fun-image-storage',
-        Key: id,
-        Body: image,
-        ACL: 'public-read',
-      })
-      .promise();
-    return BUCKET_BASE_URL + id;
+    this.awsService = services.awsService;
   }
 
   private validateLabel(storyItem: StoryItemsModel, rekognitionResult: IRekognitionResult) {
@@ -65,7 +43,7 @@ export class RekognizeHandler extends APIGatewayEventHandler {
     }
 
     const image = Buffer.from(event.body.split(',')[1], 'base64');
-    const [result, imageUrl] = await Promise.all([this.detectLabels(image), this.uploadToS3(image)]);
+    const [result, imageUrl] = await Promise.all([this.awsService.detectLabels(image), this.awsService.uploadToS3(image)]);
 
     return this.validateLabel(storyItem, result)
       ? this.response({ body: { labels: result.Labels, image: imageUrl, storyItemId: storyItemId } })
