@@ -1,31 +1,46 @@
 import { StoryItemDefinition } from '../story-item/story-item.interfaces';
 import StoryItemModel from '../story-item/story-item.model';
+import GameModel from '../game/game.model';
 import * as mongoose from 'mongoose';
+import { GameDefinition } from './game.interfaces';
 
-const holesoviceTour: StoryItemDefinition[] = [
-  {
-    title: 'first title game',
+interface Game {
+  game: GameDefinition;
+  storyItems: StoryItemDefinition[];
+}
+
+const holesoviceTour: Game = {
+  game: {
+    description: 'holesovice je nejlepsi mesto na svete',
     gameId: 'holesoviceTour',
-    description: 'holesovice tour description',
-    location: {
-      type: 'Point',
-      coordinates: [50.1006155, 14.437384],
-    },
-    labels: ['road'],
+    title: 'holesouvice cesta z mesta',
     image: null,
   },
-  {
-    title: 'nadrazi holesovice',
-    gameId: 'holesoviceTour',
-    description: 'nadrazo holesovice',
-    location: {
-      type: 'Point',
-      coordinates: [50.1090312, 14.4401134],
+  storyItems: [
+    {
+      title: 'first title game',
+      gameId: 'holesoviceTour',
+      description: 'holesovice tour description',
+      location: {
+        type: 'Point',
+        coordinates: [50.1006155, 14.437384],
+      },
+      labels: ['road'],
+      image: null,
     },
-    labels: ['road'],
-    image: null,
-  },
-];
+    {
+      title: 'nadrazi holesovice',
+      gameId: 'holesoviceTour',
+      description: 'nadrazo holesovice',
+      location: {
+        type: 'Point',
+        coordinates: [50.1090312, 14.4401134],
+      },
+      labels: ['road'],
+      image: null,
+    },
+  ],
+};
 
 async function main() {
   //tslint:disable
@@ -33,6 +48,8 @@ async function main() {
     'mongodb://flat-checker:fu4Di4thu6@flat-checker-shard-00-00-esftu.mongodb.net:27017,flat-checker-shard-00-01-esftu.mongodb.net:27017,flat-checker-shard-00-02-esftu.mongodb.net:27017/flat-checker?ssl=true&replicaSet=flat-checker-shard-0&authSource=admin&retryWrites=true',
   );
   await StoryItemModel.remove({});
-  return StoryItemModel.create(holesoviceTour);
+  await GameModel.remove({});
+  await GameModel.create(holesoviceTour.game);
+  return StoryItemModel.create(holesoviceTour.storyItems);
 }
 main().then((done) => process.exit(0));
