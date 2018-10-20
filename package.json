@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "test": "AWS_PROFILE=qestdev-rast AWS_DEFAULT_REGION=eu-west-1 node --require dotenv/config ./node_modules/mocha/bin/_mocha dotenv_config_path=./dotenv/.env.test --opts test/mocha.opts",
-    "dev": "SLS_DEBUG=* sls offline start",
+    "dev": "AWS_PROFILE=qestdev-rast AWS_DEFAULT_REGION=eu-west-1 SLS_DEBUG=* sls offline start",
     "deploy": "serverless deploy -v"
   },
   "devDependencies": {
@@ -15,6 +15,7 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^8.0.57",
     "@types/sinon": "^5.0.2",
+    "@types/uuid": "^3.4.4",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "serverless-offline": "^3.25.14",
@@ -35,6 +36,7 @@
     "blob-to-base64": "^1.0.1",
     "lodash": "^4.17.11",
     "mongoose": "^5.2.17",
-    "serverless-dotenv-plugin": "^1.2.0"
+    "serverless-dotenv-plugin": "^1.2.0",
+    "uuid": "^3.3.2"
   }
 }
