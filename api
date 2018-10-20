@@ -1,9 +1,14 @@
 //GET /game/{:gameId}
-const game = [
+const game = {
+  gameId: 'holesoviceTour',
+  title: 'Holešovice toour',
+  description: 'holgdsagasd'
+  storyItems: [
   {
     _id: 'gdasgdsagdas', // story item id
     title: 'first title game',
-    gameId: 'holesoviceTour',
+    game: 'holesoviceTour',
+    labels: ['church' , 'road'],
     description: 'holesovice tour description',
     location: {
       type: 'Point',
@@ -13,6 +18,7 @@ const game = [
   {
     _id: 'gdasgdsagdas',
     title: 'nadrazi holesovice',
+    labels: ['church' , 'road'],
     gameId: 'holesoviceTour',
     description: 'nadrazo holesovice',
     location: {
@@ -20,7 +26,8 @@ const game = [
       coordinates: [50.1090312, 14.4401134],
     },
   },
-];
+]
+};
 
 // POST /story-item/{:storyItemId}/rekognize
 const request = {

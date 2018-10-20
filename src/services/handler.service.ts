@@ -27,13 +27,38 @@ export abstract class Handler<E extends TAwsLambdaEvent> implements IHandler {
 
   abstract async process(event: E, context: Context);
 
-  public handle = (event: E, context: Context, cb: Callback) => {
+  protected async registerServices(context: Context) {
     context.callbackWaitsForEmptyEventLoop = false;
     const services = _.map(this.services, (service: IHandlerService) => service.register(this.appContainer));
-    Promise.all(services).then(() => {
+    return await Promise.all(services);
+  }
+
+  public handle = (event: E, context: Context, cb: Callback) => {
+    this.registerServices(context).then(() => {
       this.process(event, context)
         .then((response) => cb(null, response))
         .catch((err) => {
+          cb(err);
+        });
+    });
+  };
+}
+
+export abstract class APIGatewayEventHandler extends Handler<APIGatewayEvent> {
+  protected response(config: { statusCode?: number; body?: {} }) {
+    const bodyObj = config.body ? { body: JSON.stringify(config.body) } : {};
+    const statusCode = config.statusCode ? config.statusCode : 200;
+    return { ...bodyObj, statusCode };
+  }
+
+  public handle = (event: APIGatewayEvent, context: Context, cb: Callback) => {
+    this.registerServices(context).then(() => {
+      this.process(event, context)
+        .then((response) => cb(null, response))
+        .catch((err) => {
+          if ((err.name = 'HandlerServiceHttpError')) {
+            return cb(null, { statusCode: err.reponse.statusCode, body: JSON.stringify(err.reponse.body) });
+          }
           cb(null, {
             statusCode: 500,
             body: JSON.stringify({
@@ -46,10 +71,17 @@ export abstract class Handler<E extends TAwsLambdaEvent> implements IHandler {
   };
 }
 
-export abstract class APIGatewayEventHandler extends Handler<APIGatewayEvent> {
-  protected response(config: { statusCode?: number; body?: {} }) {
-    const bodyObj = config.body ? { body: JSON.stringify(config.body) } : {};
-    const statusCode = config.statusCode ? config.statusCode : 200;
-    return { ...bodyObj, statusCode };
+interface IHttpErrorResponse {
+  statusCode: number;
+  body: { message: string };
+}
+
+export class HttpError extends Error {
+  reponse: IHttpErrorResponse;
+  name: string;
+  constructor(reponse: IHttpErrorResponse) {
+    super(reponse.body.message);
+    this.reponse = reponse;
+    this.name = 'HandlerServiceHttpError';
   }
 }

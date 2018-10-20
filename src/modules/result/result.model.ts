@@ -8,7 +8,7 @@ const ResultSchema = new mongoose.Schema(
   {
     user: { type: String, required: true, index: true },
     storyItemId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    gameId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    gameId: { type: String, required: true },
     image: String,
     note: String,
   },
