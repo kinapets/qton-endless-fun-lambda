@@ -2,8 +2,11 @@ import { IHandlerServices, APIGatewayEventHandler } from '../../services/handler
 import { APIGatewayEvent, Context } from 'aws-lambda';
 
 import { IAppContainer } from '../..';
+import { MongooseService } from '../../services/mongoose.service';
 
-interface IRekognitionHandlerServices extends IHandlerServices {}
+interface IRekognitionHandlerServices extends IHandlerServices {
+  mongooseService: MongooseService;
+}
 
 export class ResultHandler extends APIGatewayEventHandler {
   constructor(services: IRekognitionHandlerServices, appContainer: IAppContainer) {

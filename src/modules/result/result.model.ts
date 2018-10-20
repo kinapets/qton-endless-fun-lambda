@@ -6,7 +6,7 @@ export interface BModel extends Model<ResultsModel> {}
 
 const ResultSchema = new mongoose.Schema(
   {
-    user: String,
+    user: { type: String, required: true, index: true },
     storyItemId: { type: mongoose.Schema.Types.ObjectId, required: true },
     gameId: { type: mongoose.Schema.Types.ObjectId, required: true },
     image: String,

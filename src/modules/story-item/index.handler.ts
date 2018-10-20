@@ -6,6 +6,7 @@ import StoryItemModel from './story-item.model';
 import { IAppContainer } from '../..';
 import { StoryItemsModel } from './story-item.interfaces';
 import { AwsService } from '../../services/aws.service';
+import Result from '../result/result.model';
 
 interface IRekognitionHandlerServices extends IHandlerServices {
   mongooseService: MongooseService;
@@ -33,10 +34,15 @@ export class RekognizeHandler extends APIGatewayEventHandler {
   }
 
   async process(event: APIGatewayEvent, context: Context) {
+    const authorizationHeader = event.headers;
     const storyItemId = event.pathParameters.storyItemId;
     const storyItem = await StoryItemModel.findOne({ _id: storyItemId })
       .lean()
       .exec();
+
+    if (!authorizationHeader) {
+      return this.response({ statusCode: 401, body: { message: 'Authorization header missing' } });
+    }
 
     if (!storyItem) {
       return this.response({ statusCode: 404, body: { message: 'Story Item not found' } });
@@ -44,6 +50,8 @@ export class RekognizeHandler extends APIGatewayEventHandler {
 
     const image = Buffer.from(event.body.split(',')[1], 'base64');
     const [result, imageUrl] = await Promise.all([this.awsService.detectLabels(image), this.awsService.uploadToS3(image)]);
+
+    await new Result({});
 
     return this.validateLabel(storyItem, result)
       ? this.response({ body: { labels: result.Labels, image: imageUrl, storyItemId: storyItemId } })

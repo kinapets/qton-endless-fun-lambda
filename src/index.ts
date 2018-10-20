@@ -18,17 +18,20 @@ export const AppContainer: IAppContainer = {
   },
 };
 
+const mongooseService = new MongooseService(config.mongoConnectionString);
+const awsService = new AwsService({ rekognition: { region: 'eu-west-1' }, s3: { bucket: 'endless-fun-image-storage' } });
+
 const recognizeHandler = new RekognizeHandler(
   {
-    mongooseService: new MongooseService(config.mongoConnectionString),
-    awsService: new AwsService({ rekognition: { region: 'eu-west-1' }, s3: { bucket: 'endless-fun-image-storage' } }),
+    mongooseService,
+    awsService,
   },
   AppContainer,
 );
 export const recognize = recognizeHandler.handle;
 
-const gameHandler = new GameHandler({}, AppContainer);
+const gameHandler = new GameHandler({ mongooseService }, AppContainer);
 export const game = gameHandler.handle;
 
-const resultsHandler = new ResultHandler({}, AppContainer);
+const resultsHandler = new ResultHandler({ mongooseService }, AppContainer);
 export const results = resultsHandler.handle;
