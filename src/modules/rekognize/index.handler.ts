@@ -1,4 +1,4 @@
-import { Handler, IHandlerServices } from '../../services/handler.service';
+import { Handler, IHandlerServices, APIGatewayEventHandler } from '../../services/handler.service';
 import { APIGatewayEvent, Context } from 'aws-lambda';
 import { MongooseService } from '../../services/mongoose.service';
 import * as uuid from 'uuid';
@@ -17,7 +17,7 @@ interface IRekognitionResult {
   Labels: { Name: string; Confidence: number }[];
 }
 
-export class RekognizeHandler extends Handler<APIGatewayEvent> {
+export class RekognizeHandler extends APIGatewayEventHandler {
   constructor(services: IInfoHandlerServices, appContainer: IAppContainer) {
     super(services, appContainer);
   }
@@ -45,15 +45,6 @@ export class RekognizeHandler extends Handler<APIGatewayEvent> {
     return BUCKET_BASE_URL + id;
   }
 
-  private response404(message: string) {
-    return {
-      statusCode: 404,
-      body: JSON.stringify({
-        message,
-      }),
-    };
-  }
-
   private validateLabel(storyItem: StoryItemsModel, rekognitionResult: IRekognitionResult) {
     for (const label of rekognitionResult.Labels) {
       if (storyItem.labels.indexOf(label.Name) >= 0) {
@@ -70,23 +61,14 @@ export class RekognizeHandler extends Handler<APIGatewayEvent> {
       .exec();
 
     if (!storyItem) {
-      return this.response404('Story Item not found');
+      return this.response({ statusCode: 404, body: { message: 'Story Item not found' } });
     }
 
     const image = Buffer.from(event.body.split(',')[1], 'base64');
     const [result, imageUrl] = await Promise.all([this.detectLabels(image), this.uploadToS3(image)]);
 
     return this.validateLabel(storyItem, result)
-      ? {
-          statusCode: 200,
-          body: JSON.stringify({ labels: result.Labels, image: imageUrl, storyItemId: storyItemId }),
-        }
-      : {
-          statusCode: 422,
-          body: JSON.stringify({
-            message: 'label on photo was not found',
-            labels: result.Labels,
-          }),
-        };
+      ? this.response({ body: { labels: result.Labels, image: imageUrl, storyItemId: storyItemId } })
+      : this.response({ statusCode: 422, body: { message: 'label on photo was not found', labels: result.Labels } });
   }
 }
