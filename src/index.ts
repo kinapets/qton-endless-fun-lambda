@@ -3,6 +3,8 @@ import { config } from './config';
 import { RekognizeHandler } from './modules/story-item/index.handler';
 import { MongooseService } from './services/mongoose.service';
 import { AwsService } from './services/aws.service';
+import { GameHandler } from './modules/game/index.handler';
+import { ResultHandler } from './modules/result/index.handler';
 
 export interface IAppContainer {
   mongoose: {
@@ -24,3 +26,9 @@ const recognizeHandler = new RekognizeHandler(
   AppContainer,
 );
 export const recognize = recognizeHandler.handle;
+
+const gameHandler = new GameHandler({}, AppContainer);
+export const game = gameHandler.handle;
+
+const resultsHandler = new ResultHandler({}, AppContainer);
+export const results = resultsHandler.handle;

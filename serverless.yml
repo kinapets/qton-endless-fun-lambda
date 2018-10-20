@@ -27,3 +27,25 @@ functions:
             parameters:
               paths:
                 storyItemId: true
+  game:
+    handler: src/index.game
+    events:
+      - http:
+          method: get
+          path: /game/{gameId}
+          cors: true
+          request:
+            parameters:
+              paths:
+                gameId: true
+  results:
+    handler: src/index.results
+    events:
+      - http:
+          method: get
+          path: /game/{gameId}/results
+          cors: true
+          request:
+            parameters:
+              paths:
+                gameId: true
