@@ -6,6 +6,7 @@ export interface ResultDefinition {
   title: string;
   description: string;
   image: string;
+  note: string
   tasks: { label: string; description: string }[];
   location: {
     type: 'Point';

@@ -30,12 +30,18 @@ export abstract class Handler<E extends TAwsLambdaEvent> implements IHandler {
   public handle = (event: E, context: Context, cb: Callback) => {
     context.callbackWaitsForEmptyEventLoop = false;
     const services = _.map(this.services, (service: IHandlerService) => service.register(this.appContainer));
-    Promise.all(services)
-      .then(() => {
-        this.process(event, context)
-          .then((response) => cb(null, response))
-          .catch((err) => cb(err, null));
-      })
-      .catch((err) => cb(err, null));
+    Promise.all(services).then(() => {
+      this.process(event, context)
+        .then((response) => cb(null, response))
+        .catch((err) => {
+          cb(null, {
+            statusCode: 500,
+            body: JSON.stringify({
+              message: err.message,
+              name: err.name,
+            }),
+          });
+        });
+    });
   };
 }

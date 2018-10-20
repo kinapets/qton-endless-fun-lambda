@@ -1,0 +1,42 @@
+//GET /game/{:gameId}
+const game = [
+  {
+    _id: 'gdasgdsagdas', // story item id
+    title: 'first title game',
+    gameId: 'holesoviceTour',
+    description: 'holesovice tour description',
+    location: {
+      type: 'Point',
+      coordinates: [50.1006155, 14.437384],
+    },
+  },
+  {
+    _id: 'gdasgdsagdas',
+    title: 'nadrazi holesovice',
+    gameId: 'holesoviceTour',
+    description: 'nadrazo holesovice',
+    location: {
+      type: 'Point',
+      coordinates: [50.1090312, 14.4401134],
+    },
+  },
+];
+
+// POST /story-item/{:storyItemId}/rekognize
+const request = {
+  headers: {
+    Authorization: 'GDASGDSAGDSAG', //user id
+  },
+  body: 'gdasmgodasmpohad', // base64 image string
+};
+
+const response = {
+  result: true,
+};
+
+// GET /game/{:gameId}/results
+const request = {
+  headers: {
+    Authorization: 'GDASGDSAGDSAG', //user id
+  },
+};

@@ -8,6 +8,7 @@ const StoryItemSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, index: true },
     gameId: { type: String, required: true, index: true },
+    labels: [String],
     image: String,
     location: {
       type: {

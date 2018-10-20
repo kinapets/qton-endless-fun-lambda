@@ -10,6 +10,7 @@ const ResultSchema = new mongoose.Schema(
     storyItemId: { type: mongoose.Schema.Types.ObjectId, required: true },
     gameId: { type: mongoose.Schema.Types.ObjectId, required: true },
     image: String,
+    note: String,
   },
   { timestamps: true },
 );
