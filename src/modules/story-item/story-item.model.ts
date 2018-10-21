@@ -7,6 +7,8 @@ export interface BModel extends Model<StoryItemsModel> {}
 const StoryItemSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, index: true },
+    subtitle: String,
+    description: String,
     gameId: { type: String, required: true, index: true },
     labels: [String],
     image: String,

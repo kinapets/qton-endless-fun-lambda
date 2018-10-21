@@ -3,44 +3,16 @@ import StoryItemModel from '../story-item/story-item.model';
 import GameModel from '../game/game.model';
 import * as mongoose from 'mongoose';
 import { GameDefinition } from './game.interfaces';
-
-interface Game {
+import { holesoviceTour } from './tours/holesovice-tour';
+import { testTour } from './tours/test-tour';
+import { qton } from './tours/qton';
+import { sundayWalking } from './tours/sunday-walking';
+import { anthropoid } from './tours/anthropoid';
+// tslint:disable
+export interface Game {
   game: GameDefinition;
   storyItems: StoryItemDefinition[];
 }
-
-const holesoviceTour: Game = {
-  game: {
-    description: 'holesovice je nejlepsi mesto na svete',
-    gameId: 'holesoviceTour',
-    title: 'holesouvice cesta z mesta',
-    image: null,
-  },
-  storyItems: [
-    {
-      title: 'first title game',
-      gameId: 'holesoviceTour',
-      description: 'holesovice tour description',
-      location: {
-        type: 'Point',
-        coordinates: [50.1006155, 14.437384],
-      },
-      labels: ['road'],
-      image: null,
-    },
-    {
-      title: 'nadrazi holesovice',
-      gameId: 'holesoviceTour',
-      description: 'nadrazo holesovice',
-      location: {
-        type: 'Point',
-        coordinates: [50.1090312, 14.4401134],
-      },
-      labels: ['road'],
-      image: null,
-    },
-  ],
-};
 
 async function main() {
   //tslint:disable
@@ -50,6 +22,18 @@ async function main() {
   await StoryItemModel.remove({});
   await GameModel.remove({});
   await GameModel.create(holesoviceTour.game);
-  return StoryItemModel.create(holesoviceTour.storyItems);
+  await StoryItemModel.create(holesoviceTour.storyItems);
+
+  await GameModel.create(testTour.game);
+  await StoryItemModel.create(testTour.storyItems);
+
+  await GameModel.create(qton.game);
+  await StoryItemModel.create(qton.storyItems);
+
+  await GameModel.create(sundayWalking.game);
+  await StoryItemModel.create(sundayWalking.storyItems);
+
+  await GameModel.create(anthropoid.game);
+  await StoryItemModel.create(anthropoid.storyItems);
 }
 main().then((done) => process.exit(0));

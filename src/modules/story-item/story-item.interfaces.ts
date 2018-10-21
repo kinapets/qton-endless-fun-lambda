@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 
 export interface StoryItemDefinition {
   title: string;
+  subtitle: string;
   gameId: string;
   description: string;
   image: string;
